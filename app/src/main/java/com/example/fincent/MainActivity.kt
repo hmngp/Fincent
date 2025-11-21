@@ -17,8 +17,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.fincent.presentation.auth.AuthViewModel
 import com.example.fincent.presentation.auth.LoginScreen
 import com.example.fincent.presentation.auth.SignUpScreen
-import com.example.fincent.presentation.dashboard.DashboardScreen
 import com.example.fincent.presentation.expense.AddExpenseScreen
+import com.example.fincent.presentation.main.MainScreen
 import com.example.fincent.ui.navigation.Screen
 import com.example.fincent.ui.theme.FincentTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,7 +46,7 @@ fun FincentApp(authViewModel: AuthViewModel = hiltViewModel()) {
     val currentUser by authViewModel.currentUser.collectAsState()
 
     val startDestination = if (currentUser != null && currentUser!!.isEmailVerified) {
-        Screen.Dashboard.route
+        "main"
     } else {
         Screen.Login.route
     }
@@ -61,7 +61,7 @@ fun FincentApp(authViewModel: AuthViewModel = hiltViewModel()) {
                     navController.navigate(Screen.SignUp.route)
                 },
                 onNavigateToDashboard = {
-                    navController.navigate(Screen.Dashboard.route) {
+                    navController.navigate("main") {
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 },
@@ -83,8 +83,13 @@ fun FincentApp(authViewModel: AuthViewModel = hiltViewModel()) {
             )
         }
 
-        composable(Screen.Dashboard.route) {
-            DashboardScreen(
+        composable("main") {
+            MainScreen(
+                onNavigateToLogin = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo("main") { inclusive = true }
+                    }
+                },
                 onNavigateToAddExpense = {
                     navController.navigate(Screen.AddExpense.route)
                 }
