@@ -32,8 +32,8 @@ class BudgetViewModel @Inject constructor(
 
     fun loadActiveBudgets(userId: String) {
         viewModelScope.launch {
-            budgetRepository.getActiveBudgets(userId).collect { budgetList ->
-                _activeBudgets.value = budgetList
+            budgetRepository.getAllBudgets(userId).collect { budgetList ->
+                _activeBudgets.value = budgetList.filter { it.isActive }
             }
         }
     }
@@ -53,6 +53,22 @@ class BudgetViewModel @Inject constructor(
     fun deleteBudget(budget: Budget) {
         viewModelScope.launch {
             budgetRepository.deleteBudget(budget)
+        }
+    }
+
+    fun deductExpenseFromBudget(category: com.example.fincent.domain.model.ExpenseCategory, amount: Double) {
+        viewModelScope.launch {
+            val currentBudgets = if (_activeBudgets.value.isNotEmpty()) _activeBudgets.value else _budgets.value.filter { it.isActive }
+            
+            val budgetToUpdate = currentBudgets.find { 
+                it.category.name == category.name 
+            } ?: currentBudgets.find { it.category == com.example.fincent.domain.model.BudgetCategory.GENERAL }
+            ?: currentBudgets.firstOrNull()
+
+            budgetToUpdate?.let { budget ->
+                val updatedBudget = budget.copy(spentAmount = budget.spentAmount + amount)
+                budgetRepository.updateBudget(updatedBudget)
+            }
         }
     }
 }

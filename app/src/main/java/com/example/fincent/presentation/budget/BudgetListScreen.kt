@@ -26,9 +26,8 @@ fun BudgetListScreen(
     val budgets by budgetViewModel.budgets.collectAsState()
 
     LaunchedEffect(currentUser) {
-        currentUser?.let { user ->
-            budgetViewModel.loadBudgets(user.uid)
-        }
+        val userId = currentUser?.uid ?: "demo-user"
+        budgetViewModel.loadBudgets(userId)
     }
 
     Scaffold(

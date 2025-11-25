@@ -18,9 +18,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.fincent.presentation.budget.AddBudgetScreen
 import com.example.fincent.presentation.budget.BudgetListScreen
 import com.example.fincent.presentation.dashboard.DashboardScreen
 import com.example.fincent.presentation.expense.ExpenseListScreen
+import com.example.fincent.presentation.goal.AddGoalScreen
 import com.example.fincent.presentation.goal.GoalListScreen
 import com.example.fincent.presentation.profile.ProfileScreen
 import com.example.fincent.ui.navigation.BottomNavItem
@@ -73,72 +75,12 @@ fun MainScreen(
             }
 
             composable(Screen.AddBudget.route) {
-                AddBudgetPlaceholderScreen(onNavigateBack = { navController.popBackStack() })
+                AddBudgetScreen(onNavigateBack = { navController.popBackStack() })
             }
 
             composable(Screen.AddGoal.route) {
-                AddGoalPlaceholderScreen(onNavigateBack = { navController.popBackStack() })
+                AddGoalScreen(onNavigateBack = { navController.popBackStack() })
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AddBudgetPlaceholderScreen(onNavigateBack: () -> Unit) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Add Budget") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Filled.ArrowBack, "Back")
-                    }
-                }
-            )
-        }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                "Add Budget screen - Coming soon",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AddGoalPlaceholderScreen(onNavigateBack: () -> Unit) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Add Goal") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Filled.ArrowBack, "Back")
-                    }
-                }
-            )
-        }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                "Add Goal screen - Coming soon",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
-            )
         }
     }
 }

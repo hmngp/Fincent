@@ -26,9 +26,8 @@ fun GoalListScreen(
     val goals by goalViewModel.goals.collectAsState()
 
     LaunchedEffect(currentUser) {
-        currentUser?.let { user ->
-            goalViewModel.loadGoals(user.uid)
-        }
+        val userId = currentUser?.uid ?: "demo-user"
+        goalViewModel.loadGoals(userId)
     }
 
     Scaffold(

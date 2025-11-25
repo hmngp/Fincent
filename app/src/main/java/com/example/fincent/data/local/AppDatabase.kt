@@ -11,9 +11,10 @@ import com.example.fincent.data.local.entity.*
     entities = [
         ExpenseEntity::class,
         BudgetEntity::class,
-        GoalEntity::class
+        GoalEntity::class,
+        BillEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -21,6 +22,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun expenseDao(): ExpenseDao
     abstract fun budgetDao(): BudgetDao
     abstract fun goalDao(): GoalDao
+    abstract fun billDao(): BillDao
 
     companion object {
         const val DATABASE_NAME = "fincent_database"

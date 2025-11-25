@@ -16,6 +16,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.fincent.presentation.auth.AuthViewModel
 import com.example.fincent.presentation.expense.ExpenseViewModel
 import com.example.fincent.presentation.budget.BudgetViewModel
+import com.example.fincent.presentation.bill.BillViewModel
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,38 +26,37 @@ fun DashboardScreen(
     onNavigateToAddExpense: () -> Unit,
     authViewModel: AuthViewModel = hiltViewModel(),
     expenseViewModel: ExpenseViewModel = hiltViewModel(),
-    budgetViewModel: BudgetViewModel = hiltViewModel()
+    budgetViewModel: BudgetViewModel = hiltViewModel(),
+    billViewModel: BillViewModel = hiltViewModel()
 ) {
     val currentUser by authViewModel.currentUser.collectAsState()
     val expenses by expenseViewModel.expenses.collectAsState()
     val budgets by budgetViewModel.activeBudgets.collectAsState()
+    val bills by billViewModel.unpaidBills.collectAsState()
 
     LaunchedEffect(currentUser) {
-        currentUser?.let { user ->
-            expenseViewModel.loadExpenses(user.uid)
-            budgetViewModel.loadActiveBudgets(user.uid)
-        }
+        val userId = currentUser?.uid ?: "demo-user"
+        expenseViewModel.loadExpenses(userId)
+        budgetViewModel.loadActiveBudgets(userId)
+        billViewModel.loadUnpaidBills(userId)
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { 
-                    Column {
-                        Text("Welcome back!")
-                        currentUser?.let {
-                            Text(
-                                text = it.displayName,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Normal
-                            )
-                        }
-                    }
+                    Text(
+                        "Fincent Dashboard",
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onNavigateToAddExpense) {
+            FloatingActionButton(
+                onClick = onNavigateToAddExpense,
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ) {
                 Icon(Icons.Filled.Add, "Add Expense")
             }
         }
@@ -66,41 +68,47 @@ fun DashboardScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Summary Card
+            // Weekly Summary Card
             item {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    elevation = CardDefaults.cardElevation(4.dp)
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    )
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            "This Month",
-                            fontSize = 20.sp,
+                            "Weekly Summary",
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Column {
-                                Text("Total Spent", fontSize = 14.sp)
+                                Text("Total Spent", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 val totalExpense = expenses
-                                    .filter { it.date >= getStartOfMonth() }
+                                    .filter { it.date >= getStartOfWeek() }
                                     .sumOf { it.amount }
                                 Text(
                                     "$${"%.2f".format(totalExpense)}",
-                                    fontSize = 24.sp,
+                                    fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.primary
                                 )
                             }
                             Column(horizontalAlignment = Alignment.End) {
-                                Text("Budget", fontSize = 14.sp)
+                                Text("Budget Left", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 val totalBudget = budgets.sumOf { it.totalAmount }
+                                val totalSpentMonth = expenses
+                                    .filter { it.date >= getStartOfMonth() }
+                                    .sumOf { it.amount }
+                                val budgetLeft = (totalBudget - totalSpentMonth).coerceAtLeast(0.0)
                                 Text(
-                                    "$${"%.2f".format(totalBudget)}",
-                                    fontSize = 24.sp,
+                                    "$${"%.2f".format(budgetLeft)}",
+                                    fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.secondary
                                 )
@@ -110,63 +118,104 @@ fun DashboardScreen(
                 }
             }
 
-            // Recent Expenses
+            // Upcoming Bills
             item {
-                Text(
-                    "Recent Expenses",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    )
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            "Upcoming Bills",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        
+                        if (bills.isEmpty()) {
+                            Text("No upcoming bills", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        } else {
+                            bills.take(3).forEach { bill ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 8.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Column {
+                                        Text(bill.name, fontWeight = FontWeight.Medium)
+                                        Text(
+                                            "Due: ${formatDate(bill.dueDate)}",
+                                            fontSize = 12.sp,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                    Text(
+                                        "$${"%.2f".format(bill.amount)}",
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
-            if (expenses.isEmpty()) {
-                item {
-                    Card(modifier = Modifier.fillMaxWidth()) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(32.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("No expenses yet. Add your first expense!")
-                        }
-                    }
-                }
-            } else {
-                items(expenses.take(10)) { expense ->
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            // Recent Transactions
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                    )
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            "Recent Transactions",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
                         )
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column {
-                                Text(
-                                    expense.description.ifEmpty { "Expense" },
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Text(
-                                    expense.category.name,
-                                    fontSize = 12.sp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        if (expenses.isEmpty()) {
+                            Text("No recent transactions", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        } else {
+                            expenses.take(5).forEach { expense ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 8.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column {
+                                        Text(
+                                            expense.description.ifEmpty { "Expense" },
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                        Text(
+                                            formatDate(expense.date),
+                                            fontSize = 12.sp,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                    Text(
+                                        "-$${"%.2f".format(expense.amount)}",
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                }
                             }
-                            Text(
-                                "-$${"%.2f".format(expense.amount)}",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.error
-                            )
                         }
                     }
                 }
+            }
+            
+            item {
+                Spacer(modifier = Modifier.height(60.dp))
             }
         }
     }
@@ -181,4 +230,20 @@ private fun getStartOfMonth(): Long {
     calendar.set(java.util.Calendar.MILLISECOND, 0)
     return calendar.timeInMillis
 }
+
+private fun getStartOfWeek(): Long {
+    val calendar = java.util.Calendar.getInstance()
+    calendar.set(java.util.Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
+    calendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
+    calendar.set(java.util.Calendar.MINUTE, 0)
+    calendar.set(java.util.Calendar.SECOND, 0)
+    calendar.set(java.util.Calendar.MILLISECOND, 0)
+    return calendar.timeInMillis
+}
+
+private fun formatDate(timestamp: Long): String {
+    val sdf = SimpleDateFormat("MMM dd", Locale.getDefault())
+    return sdf.format(java.util.Date(timestamp))
+}
+
 

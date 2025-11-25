@@ -29,9 +29,8 @@ fun ExpenseListScreen(
     val dateFormat = remember { SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()) }
 
     LaunchedEffect(currentUser) {
-        currentUser?.let { user ->
-            expenseViewModel.loadExpenses(user.uid)
-        }
+        val userId = currentUser?.uid ?: "demo-user"
+        expenseViewModel.loadExpenses(userId)
     }
 
     Scaffold(
