@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    FincentApp()
+                    FincentAppContent()
                 }
             }
         }
@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun FincentApp() {
+fun FincentAppContent() {
     val navController = rememberNavController()
 
     NavHost(
