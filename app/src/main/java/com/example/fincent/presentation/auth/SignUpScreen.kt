@@ -111,7 +111,7 @@ fun SignUpScreen(
             trailingIcon = {
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
-                        if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                        if (passwordVisible) Icons.Filled.Lock else Icons.Filled.Lock,
                         "Toggle password visibility"
                     )
                 }
@@ -138,7 +138,7 @@ fun SignUpScreen(
             trailingIcon = {
                 IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
                     Icon(
-                        if (confirmPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                        if (confirmPasswordVisible) Icons.Filled.Lock else Icons.Filled.Lock,
                         "Toggle password visibility"
                     )
                 }

@@ -4,10 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -95,7 +92,7 @@ fun LoginScreen(
             trailingIcon = {
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
-                        if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                        if (passwordVisible) Icons.Filled.Lock else Icons.Filled.Lock,
                         "Toggle password visibility"
                     )
                 }

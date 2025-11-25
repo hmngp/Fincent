@@ -10,6 +10,11 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 class FincentApp : Application(), Configuration.Provider {
 
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setMinimumLoggingLevel(android.util.Log.INFO)
+            .build()
+
     override fun onCreate() {
         super.onCreate()
         createNotificationChannels()
@@ -53,12 +58,6 @@ class FincentApp : Application(), Configuration.Provider {
                 channels.forEach { manager.createNotificationChannel(it) }
             }
         }
-    }
-
-    override fun getWorkManagerConfiguration(): Configuration {
-        return Configuration.Builder()
-            .setMinimumLoggingLevel(android.util.Log.INFO)
-            .build()
     }
 
     companion object {

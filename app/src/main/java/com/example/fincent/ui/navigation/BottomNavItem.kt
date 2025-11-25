@@ -17,7 +17,7 @@ sealed class BottomNavItem(
     
     object Expenses : BottomNavItem(
         route = Screen.Expenses.route,
-        icon = Icons.Filled.Payments,
+        icon = Icons.Filled.AccountBalanceWallet,
         label = "Expenses"
     )
     

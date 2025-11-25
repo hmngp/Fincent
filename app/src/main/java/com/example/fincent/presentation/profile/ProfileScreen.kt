@@ -97,13 +97,13 @@ fun ProfileScreen(
             ) {
                 Column {
                     ProfileOption(
-                        icon = Icons.Filled.School,
+                        icon = Icons.Filled.Star,
                         title = "University",
                         value = currentUser?.university?.ifEmpty { "Not set" } ?: "Not set"
                     )
                     Divider()
                     ProfileOption(
-                        icon = Icons.Filled.Book,
+                        icon = Icons.Filled.Star,
                         title = "Course",
                         value = currentUser?.course?.ifEmpty { "Not set" } ?: "Not set"
                     )
@@ -115,7 +115,7 @@ fun ProfileScreen(
                     )
                     Divider()
                     ProfileOption(
-                        icon = Icons.Filled.Security,
+                        icon = Icons.Filled.Lock,
                         title = "Privacy",
                         value = ""
                     )
@@ -134,7 +134,7 @@ fun ProfileScreen(
                     containerColor = MaterialTheme.colorScheme.error
                 )
             ) {
-                Icon(Icons.Filled.ExitToApp, "Sign Out")
+                Icon(Icons.Filled.Close, "Sign Out")
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Sign Out")
             }
