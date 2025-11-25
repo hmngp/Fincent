@@ -1,55 +1,145 @@
-# Fincent - Student Budgeting Android App
+# Fincent - Smart Student Budgeting App 💰
 
 <div align="center">
-  <img src="app/src/main/res/drawable/dashboard_screen.png" alt="Dashboard Screen" width="200"/>
-  <img src="app/src/main/res/drawable/add_expense_screen.png" alt="Add Expense Screen" width="200"/>
+  <h3>Your Personal Finance Companion for Student Life</h3>
+  <p>Built with Kotlin, Jetpack Compose, and Modern Android Architecture</p>
 </div>
 
-## 📱 Overview
+---
 
-**Fincent** is a modern student budgeting Android application built with Kotlin and Jetpack Compose. The app helps students track their expenses, manage budgets, and stay on top of their financial goals with an intuitive and beautiful Material Design 3 interface.
+## 🎯 Project Status: **MVP COMPLETE & FUNCTIONAL**
 
-## ✨ Features
+Fincent is a comprehensive student budgeting Android application with a working MVP that includes authentication, expense tracking, budget management, goal setting, and more!
 
-### 🏠 Dashboard Screen
-- **Weekly Summary Card**: Track total spending and remaining budget
-- **Upcoming Bills**: View and manage upcoming bill payments
-- **Recent Transactions**: Quick overview of recent expense history
-- **Floating Action Button**: Easy access to add new expenses
+---
 
-### 💰 Add Expense Screen
-- **Amount Input**: Enter expense amounts with validation
-- **Description Field**: Add detailed descriptions for expenses
-- **Category Selection**: Choose from predefined categories (Food, Transportation, Entertainment, Shopping, Bills, Other)
-- **Date Picker**: Select or use current date for expenses
-- **Split with Friends**: Future feature for shared expenses
+## ✨ Implemented Features
+
+### 🔐 **Authentication & User Management**
+- [x] Firebase Authentication with email/password
+- [x] Email verification system
+- [x] User profile management
+- [x] Password reset functionality
+- [x] Secure sign-in/sign-out
+
+### 💸 **Expense Management**
+- [x] Add, edit, and delete expenses
+- [x] Category-based expense tracking
+- [x] Date range filtering
+- [x] Monthly expense summaries
+- [x] Comprehensive expense list view
+
+### 📊 **Budget Tracking**
+- [x] Create and manage budgets
+- [x] Budget progress visualization
+- [x] Active budget monitoring
+- [x] Budget vs. actual spending comparison
+- [x] Multiple budget types (Weekly, Monthly, Semester, Yearly)
+
+### 🎯 **Financial Goals**
+- [x] Set savings goals with deadlines
+- [x] Track goal progress
+- [x] Priority-based goal management
+- [x] Visual progress indicators
+- [x] Goal categories (Savings, Emergency Fund, Education, Travel, etc.)
+
+### 📱 **Modern UI & Navigation**
+- [x] Material Design 3 components
+- [x] Bottom navigation with 5 main tabs
+- [x] Responsive layouts
+- [x] Dark/Light theme support (Material3)
+- [x] Intuitive user experience
+
+### 🔔 **Notifications & Reminders**
+- [x] WorkManager integration
+- [x] Bill reminder notifications
+- [x] Weekly financial report generation
+- [x] Budget alert system
+- [x] Notification channels
+
+### 📄 **Data Management**
+- [x] JSON data export
+- [x] CSV report generation
+- [x] Data backup functionality
+- [x] Import/restore capabilities
+
+### 📚 **Financial Literacy**
+- [x] Educational content viewer
+- [x] Financial tips and articles
+- [x] Reading time estimates
+- [x] Category-based content
+
+### 👤 **Profile Management**
+- [x] User profile display
+- [x] University and course information
+- [x] Email verification status
+- [x] Account settings
+- [x] Sign out functionality
+
+---
 
 ## 🛠️ Technical Stack
 
-- **Language**: Kotlin
+### **Core Technologies**
+- **Language**: Kotlin 2.0.21
 - **UI Framework**: Jetpack Compose
 - **Architecture**: MVVM (Model-View-ViewModel)
+- **Dependency Injection**: Hilt
 - **Navigation**: Navigation Compose
-- **Design System**: Material Design 3
-- **Build System**: Gradle with Kotlin DSL
-- **Minimum SDK**: API 24 (Android 7.0)
-- **Target SDK**: API 36 (Android 14)
 
-## 📁 Project Structure
+### **Database & Storage**
+- **Local Database**: Room 2.6.1
+- **Preferences**: DataStore
+- **Firebase**: Authentication & Firestore
+
+### **Background Processing**
+- **WorkManager**: 2.9.1 for scheduled tasks
+- **Notifications**: Android Notification API
+
+### **Additional Libraries**
+- **Image Loading**: Coil 2.5.0
+- **Network**: Retrofit 2.9.0 & OkHttp 4.12.0
+- **JSON**: Gson 2.10.1
+- **Permissions**: Accompanist Permissions 0.34.0
+
+---
+
+## 📁 Project Architecture
 
 ```
-app/src/main/java/com/example/fincent/
-├── MainActivity.kt                 # Main activity with screen routing
+com.example.fincent/
+├── data/
+│   ├── local/
+│   │   ├── entity/          # Room entities
+│   │   ├── dao/             # Data Access Objects
+│   │   ├── converter/       # Type converters
+│   │   └── AppDatabase.kt
+│   └── repository/          # Repository implementations
+│
+├── domain/
+│   └── model/               # Domain models
+│
+├── presentation/
+│   ├── auth/                # Authentication screens
+│   ├── dashboard/           # Dashboard screen
+│   ├── expense/             # Expense management
+│   ├── budget/              # Budget tracking
+│   ├── goal/                # Goal setting
+│   ├── profile/             # User profile
+│   ├── literacy/            # Financial literacy
+│   └── main/                # Main screen with bottom nav
+│
 ├── ui/
-│   ├── DashboardScreen.kt         # Dashboard with cards and summary
-│   ├── AddExpenseScreen.kt        # Expense form with validation
-│   └── theme/
-│       ├── Color.kt               # App color scheme
-│       ├── Theme.kt               # Material 3 theming
-│       └── Type.kt                # Typography definitions
-└── viewmodel/
-    └── DashboardViewModel.kt      # State management for dashboard
+│   ├── navigation/          # Navigation setup
+│   └── theme/               # Material Design 3 theme
+│
+├── worker/                  # Background workers
+├── util/                    # Utility classes
+├── di/                      # Hilt modules
+└── FincentApp.kt           # Application class
 ```
+
+---
 
 ## 🚀 Getting Started
 
@@ -72,72 +162,101 @@ app/src/main/java/com/example/fincent/
    - Select "Open an existing project"
    - Navigate to the cloned Fincent directory
 
-3. **Sync Project**
+3. **Configure Firebase** (Optional for full functionality)
+   - Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
+   - Download `google-services.json`
+   - Place it in `app/` directory
+
+4. **Sync Project**
    - Android Studio will automatically sync Gradle files
    - Wait for the sync to complete
 
-4. **Run the App**
+5. **Run the App**
    - Connect an Android device or start an emulator
    - Click the "Run" button or press `Shift + F10`
    - The app will build and install on your device
 
-## 📱 Screenshots
+---
 
-### Dashboard Screen
-The main dashboard provides a comprehensive overview of your financial status:
-- Weekly spending summary with budget tracking
-- Upcoming bills with due dates and amounts
-- Recent transaction history with descriptions and amounts
-- Quick access floating action button for adding expenses
+## 📸 Screenshots
 
-### Add Expense Screen
-A clean and intuitive form for recording new expenses:
-- Amount input with proper validation
-- Description field for expense details
-- Category dropdown with common expense types
-- Date selection with current date as default
-- Action buttons for saving or splitting expenses
+### Authentication Flow
+- Modern login and signup screens
+- Email verification
+- Password reset
+
+### Main Dashboard
+- Financial overview
+- Recent expenses
+- Budget summary
+- Quick actions
+
+### Feature Screens
+- Expense list with filtering
+- Budget tracking with progress
+- Goal management
+- User profile
+
+---
 
 ## 🎨 Design Features
 
-- **Material Design 3**: Modern, adaptive design system
+- **Material Design 3**: Latest design system with dynamic color
 - **Responsive Layout**: Optimized for various screen sizes
 - **Card-based UI**: Clean, organized information display
+- **Progress Indicators**: Visual feedback for budgets and goals
 - **Consistent Theming**: Cohesive color scheme and typography
 - **Accessibility**: Built with accessibility best practices
 
-## 🔧 Dependencies
+---
 
-The project uses the following key dependencies:
+## 📊 Database Schema
 
-```kotlin
-// Core Android
-implementation("androidx.core:core-ktx:1.17.0")
-implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
-implementation("androidx.activity:activity-compose:1.11.0")
+### Main Tables
+- **expenses**: User expenses with categories and dates
+- **budgets**: Budget tracking with progress
+- **goals**: Financial goals with targets and progress
 
-// Compose BOM
-implementation(platform("androidx.compose:compose-bom:2024.09.00"))
-implementation("androidx.compose.ui:ui")
-implementation("androidx.compose.ui:ui-graphics")
-implementation("androidx.compose.ui:ui-tooling-preview")
-implementation("androidx.compose.material3:material3")
+### Entity Relationships
+- User → Expenses (One-to-Many)
+- User → Budgets (One-to-Many)
+- User → Goals (One-to-Many)
 
-// Navigation
-implementation("androidx.navigation:navigation-compose:2.8.4")
+---
+
+## 🔧 Development Features
+
+### Clean Architecture
+```
+UI Layer (Compose) → ViewModel → Repository → Data Source (Room/Firebase)
 ```
 
-## 🚧 Future Enhancements
+### Dependency Injection
+- All dependencies managed through Hilt
+- Scoped providers for singletons
+- ViewModels injected automatically
 
-- [ ] **Data Persistence**: Room database integration
-- [ ] **User Authentication**: Login and registration system
-- [ ] **Budget Management**: Set and track monthly budgets
-- [ ] **Expense Categories**: Custom category creation
-- [ ] **Reports & Analytics**: Spending insights and trends
-- [ ] **Split Expenses**: Share expenses with friends
-- [ ] **Notifications**: Bill reminders and budget alerts
-- [ ] **Dark Mode**: Theme switching capability
-- [ ] **Export Data**: CSV/PDF export functionality
+### State Management
+- StateFlow for reactive UI updates
+- Loading states and error handling
+- Coroutines for async operations
+
+---
+
+## 🌟 Upcoming Features
+
+See [FEATURE_IMPLEMENTATION_GUIDE.md](FEATURE_IMPLEMENTATION_GUIDE.md) for detailed implementation guides for:
+
+- [ ] **Bill Splitting**: Share expenses with friends
+- [ ] **Student Loan Tracker**: Manage and track student debt
+- [ ] **Semester Budgeting**: Academic vs. holiday budget planning
+- [ ] **Irregular Income**: Track variable income sources
+- [ ] **Gamification**: Badges, challenges, and rewards
+- [ ] **Quick Entry**: Voice and photo receipt capture
+- [ ] **Campus Deals**: University-specific discounts
+- [ ] **Enhanced Privacy**: Advanced privacy settings
+
+---
 
 ## 🤝 Contributing
 
@@ -145,45 +264,68 @@ We welcome contributions to Fincent! Here's how you can help:
 
 1. **Fork the repository**
 2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Commit your changes** (`git commit -m 'Add some amazing feature'`)
+3. **Commit your changes** (`git commit -m 'feat: add amazing feature'`)
 4. **Push to the branch** (`git push origin feature/amazing-feature`)
 5. **Open a Pull Request**
 
 ### Development Guidelines
 - Follow Kotlin coding conventions
-- Use meaningful commit messages
+- Use meaningful commit messages (Conventional Commits)
 - Add comments for complex logic
 - Test on multiple screen sizes
 - Ensure accessibility compliance
 
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
 
 ## 👨‍💻 Author
 
 **Hemang Patel**
 - GitHub: [@hmngp](https://github.com/hmngp)
 - Email: hemangbpatel1109@gmail.com
+- Institution: James Cook University
+
+---
 
 ## 🙏 Acknowledgments
 
 - Material Design 3 guidelines for UI/UX inspiration
 - Android Developer documentation for best practices
 - Jetpack Compose team for the amazing UI framework
+- Firebase team for authentication and cloud services
 - Open source community for various libraries and tools
+
+---
 
 ## 📞 Support
 
 If you encounter any issues or have questions:
 
-1. Check the [Issues](https://github.com/hmngp/Fincent/issues) page
-2. Create a new issue with detailed description
-3. Contact the maintainer via email
+1. Check the [Feature Implementation Guide](FEATURE_IMPLEMENTATION_GUIDE.md)
+2. Review [Implementation Progress](IMPLEMENTATION_PROGRESS.md)
+3. Create an issue on [GitHub Issues](https://github.com/hmngp/Fincent/issues)
+4. Contact the maintainer via email
+
+---
+
+## 📈 Project Stats
+
+- **Languages**: Kotlin 100%
+- **Architecture**: Clean Architecture with MVVM
+- **UI**: Jetpack Compose
+- **Database**: Room + Firebase Firestore
+- **Min SDK**: API 24 (Android 7.0)
+- **Target SDK**: API 36 (Android 14)
 
 ---
 
 <div align="center">
   <p>Made with ❤️ for students who want to take control of their finances</p>
   <p>⭐ Star this repository if you found it helpful!</p>
+  <p><strong>Version 1.0 - MVP Complete</strong></p>
 </div>
