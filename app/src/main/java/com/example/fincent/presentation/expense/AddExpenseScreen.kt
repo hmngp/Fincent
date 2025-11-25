@@ -98,22 +98,23 @@ fun AddExpenseScreen(
 
             Button(
                 onClick = {
-                    currentUser?.let { user ->
-                        val expenseAmount = amount.toDoubleOrNull() ?: 0.0
-                        if (expenseAmount > 0) {
-                            val expense = Expense(
-                                userId = user.uid,
-                                amount = expenseAmount,
-                                description = description,
-                                category = selectedCategory,
-                                date = System.currentTimeMillis()
-                            )
-                            expenseViewModel.addExpense(expense)
-                            onNavigateBack()
-                        }
+                    val expenseAmount = amount.toDoubleOrNull() ?: 0.0
+                    if (expenseAmount > 0) {
+                        val userId = currentUser?.uid ?: "demo-user"
+                        val expense = Expense(
+                            userId = userId,
+                            amount = expenseAmount,
+                            description = description.ifBlank { "Expense" },
+                            category = selectedCategory,
+                            date = System.currentTimeMillis()
+                        )
+                        expenseViewModel.addExpense(expense)
+                        onNavigateBack()
                     }
                 },
-                modifier = Modifier.fillMaxWidth().height(50.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
             ) {
                 Text("Add Expense", fontSize = 16.sp, fontWeight = FontWeight.Medium)
             }
