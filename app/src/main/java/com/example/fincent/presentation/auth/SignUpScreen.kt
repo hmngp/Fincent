@@ -71,7 +71,7 @@ fun SignUpScreen(
             value = displayName,
             onValueChange = { displayName = it },
             label = { Text("Full Name") },
-            leadingIcon = { Icon(Icons.Default.Person, "Name") },
+            leadingIcon = { Icon(Icons.Filled.Person, "Name") },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
@@ -89,7 +89,7 @@ fun SignUpScreen(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
-            leadingIcon = { Icon(Icons.Default.Email, "Email") },
+            leadingIcon = { Icon(Icons.Filled.Email, "Email") },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
@@ -107,11 +107,11 @@ fun SignUpScreen(
             value = password,
             onValueChange = { password = it },
             label = { Text("Password") },
-            leadingIcon = { Icon(Icons.Default.Lock, "Password") },
+            leadingIcon = { Icon(Icons.Filled.Lock, "Password") },
             trailingIcon = {
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
-                        if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                         "Toggle password visibility"
                     )
                 }
@@ -134,11 +134,11 @@ fun SignUpScreen(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
             label = { Text("Confirm Password") },
-            leadingIcon = { Icon(Icons.Default.Lock, "Confirm Password") },
+            leadingIcon = { Icon(Icons.Filled.Lock, "Confirm Password") },
             trailingIcon = {
                 IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
                     Icon(
-                        if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        if (confirmPasswordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                         "Toggle password visibility"
                     )
                 }

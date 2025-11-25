@@ -55,7 +55,7 @@ fun DashboardScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onNavigateToAddExpense) {
-                Icon(Icons.Default.Add, "Add Expense")
+                Icon(Icons.Filled.Add, "Add Expense")
             }
         }
     ) { padding ->
@@ -178,6 +178,7 @@ private fun getStartOfMonth(): Long {
     calendar.set(java.util.Calendar.HOUR_OF_DAY, 0)
     calendar.set(java.util.Calendar.MINUTE, 0)
     calendar.set(java.util.Calendar.SECOND, 0)
+    calendar.set(java.util.Calendar.MILLISECOND, 0)
     return calendar.timeInMillis
 }
 

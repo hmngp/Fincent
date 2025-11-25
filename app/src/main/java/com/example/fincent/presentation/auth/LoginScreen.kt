@@ -73,7 +73,7 @@ fun LoginScreen(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
-            leadingIcon = { Icon(Icons.Default.Email, "Email") },
+            leadingIcon = { Icon(Icons.Filled.Email, "Email") },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
@@ -91,11 +91,11 @@ fun LoginScreen(
             value = password,
             onValueChange = { password = it },
             label = { Text("Password") },
-            leadingIcon = { Icon(Icons.Default.Lock, "Password") },
+            leadingIcon = { Icon(Icons.Filled.Lock, "Password") },
             trailingIcon = {
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
                     Icon(
-                        if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                        if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                         "Toggle password visibility"
                     )
                 }

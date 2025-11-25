@@ -44,11 +44,24 @@ class MainActivity : ComponentActivity() {
 fun FincentApp(authViewModel: AuthViewModel = hiltViewModel()) {
     val navController = rememberNavController()
     val currentUser by authViewModel.currentUser.collectAsState()
+    val isCheckingAuth by authViewModel.isCheckingAuth.collectAsState()
 
-    val startDestination = if (currentUser != null && currentUser!!.isEmailVerified) {
+    // Wait for auth check to complete before determining start destination
+    val startDestination = if (!isCheckingAuth && currentUser?.isEmailVerified == true) {
         "main"
-    } else {
+    } else if (!isCheckingAuth) {
         Screen.Login.route
+    } else {
+        Screen.Login.route // Show login while checking, will navigate if authenticated
+    }
+
+    // Navigate to main screen if user becomes authenticated
+    androidx.compose.runtime.LaunchedEffect(currentUser, isCheckingAuth) {
+        if (!isCheckingAuth && currentUser?.isEmailVerified == true) {
+            navController.navigate("main") {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+        }
     }
 
     NavHost(

@@ -1,14 +1,20 @@
 package com.example.fincent.presentation.main
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -47,16 +53,92 @@ fun MainScreen(
             }
 
             composable(Screen.Budget.route) {
-                BudgetListScreen(onNavigateToAddBudget = { /* TODO */ })
+                BudgetListScreen(
+                    onNavigateToAddBudget = {
+                        navController.navigate(Screen.AddBudget.route)
+                    }
+                )
             }
 
             composable(Screen.Goals.route) {
-                GoalListScreen(onNavigateToAddGoal = { /* TODO */ })
+                GoalListScreen(
+                    onNavigateToAddGoal = {
+                        navController.navigate(Screen.AddGoal.route)
+                    }
+                )
             }
 
             composable(Screen.Profile.route) {
                 ProfileScreen(onNavigateToLogin = onNavigateToLogin)
             }
+
+            composable(Screen.AddBudget.route) {
+                AddBudgetPlaceholderScreen(onNavigateBack = { navController.popBackStack() })
+            }
+
+            composable(Screen.AddGoal.route) {
+                AddGoalPlaceholderScreen(onNavigateBack = { navController.popBackStack() })
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddBudgetPlaceholderScreen(onNavigateBack: () -> Unit) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Add Budget") },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.Filled.ArrowBack, "Back")
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                "Add Budget screen - Coming soon",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddGoalPlaceholderScreen(onNavigateBack: () -> Unit) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Add Goal") },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.Filled.ArrowBack, "Back")
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                "Add Goal screen - Coming soon",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
+            )
         }
     }
 }

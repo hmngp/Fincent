@@ -41,14 +41,14 @@ fun ExpenseListScreen(
                 title = { Text("All Expenses") },
                 actions = {
                     IconButton(onClick = { /* Filter functionality */ }) {
-                        Icon(Icons.Default.FilterList, "Filter")
+                        Icon(Icons.Filled.FilterList, "Filter")
                     }
                 }
             )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onNavigateToAddExpense) {
-                Icon(Icons.Default.Add, "Add Expense")
+                Icon(Icons.Filled.Add, "Add Expense")
             }
         }
     ) { padding ->

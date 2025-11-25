@@ -60,7 +60,7 @@ fun FinancialLiteracyScreen(
                 title = { Text("Financial Literacy") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                        Icon(Icons.Filled.ArrowBack, "Back")
                     }
                 }
             )
@@ -93,7 +93,7 @@ fun FinancialLiteracyScreen(
                             .padding(16.dp)
                     ) {
                         Icon(
-                            Icons.Default.Book,
+                            Icons.Filled.Book,
                             contentDescription = null,
                             modifier = Modifier.size(48.dp),
                             tint = MaterialTheme.colorScheme.primary

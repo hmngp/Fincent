@@ -23,6 +23,9 @@ class AuthViewModel @Inject constructor(
     private val _currentUser = MutableStateFlow<User?>(null)
     val currentUser: StateFlow<User?> = _currentUser.asStateFlow()
 
+    private val _isCheckingAuth = MutableStateFlow(true)
+    val isCheckingAuth: StateFlow<Boolean> = _isCheckingAuth.asStateFlow()
+
     init {
         checkAuthStatus()
     }
@@ -31,14 +34,23 @@ class AuthViewModel @Inject constructor(
         val firebaseUser = authRepository.currentUser
         if (firebaseUser != null) {
             viewModelScope.launch {
+                _isCheckingAuth.value = true
                 authRepository.getUserProfile(firebaseUser.uid).collect { resource ->
                     when (resource) {
-                        is Resource.Success -> _currentUser.value = resource.data
-                        is Resource.Error -> _authState.value = AuthState.Error(resource.message)
+                        is Resource.Success -> {
+                            _currentUser.value = resource.data
+                            _isCheckingAuth.value = false
+                        }
+                        is Resource.Error -> {
+                            _authState.value = AuthState.Error(resource.message)
+                            _isCheckingAuth.value = false
+                        }
                         is Resource.Loading -> {}
                     }
                 }
             }
+        } else {
+            _isCheckingAuth.value = false
         }
     }
 

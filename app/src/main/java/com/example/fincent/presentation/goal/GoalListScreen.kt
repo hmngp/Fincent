@@ -37,7 +37,7 @@ fun GoalListScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onNavigateToAddGoal) {
-                Icon(Icons.Default.Add, "Add Goal")
+                Icon(Icons.Filled.Add, "Add Goal")
             }
         }
     ) { padding ->
@@ -82,7 +82,7 @@ fun GoalListScreen(
                                     )
                                 }
                                 Text(
-                                    "${(goal.progress * 100).toInt()}%",
+                                    "${(goal.progress.coerceIn(0f, 1f) * 100).toInt()}%",
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.primary
@@ -92,7 +92,7 @@ fun GoalListScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                             
                             LinearProgressIndicator(
-                                progress = goal.progress,
+                                progress = goal.progress.coerceIn(0f, 1f),
                                 modifier = Modifier.fillMaxWidth()
                             )
                             

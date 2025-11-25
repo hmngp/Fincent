@@ -37,7 +37,7 @@ fun BudgetListScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onNavigateToAddBudget) {
-                Icon(Icons.Default.Add, "Add Budget")
+                Icon(Icons.Filled.Add, "Add Budget")
             }
         }
     ) { padding ->
@@ -91,7 +91,11 @@ fun BudgetListScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                             
                             LinearProgressIndicator(
-                                progress = (budget.spentAmount / budget.totalAmount).toFloat().coerceIn(0f, 1f),
+                                progress = if (budget.totalAmount > 0) {
+                                    (budget.spentAmount / budget.totalAmount).toFloat().coerceIn(0f, 1f)
+                                } else {
+                                    0f
+                                },
                                 modifier = Modifier.fillMaxWidth()
                             )
                             

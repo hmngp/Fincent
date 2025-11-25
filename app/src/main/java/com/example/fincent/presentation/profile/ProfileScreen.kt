@@ -43,7 +43,7 @@ fun ProfileScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Icon(
-                        Icons.Default.AccountCircle,
+                        Icons.Filled.AccountCircle,
                         contentDescription = "Profile",
                         modifier = Modifier.size(80.dp),
                         tint = MaterialTheme.colorScheme.primary
@@ -76,7 +76,7 @@ fun ProfileScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
-                                    Icons.Default.CheckCircle,
+                                    Icons.Filled.CheckCircle,
                                     "Verified",
                                     modifier = Modifier.size(16.dp)
                                 )
@@ -97,25 +97,25 @@ fun ProfileScreen(
             ) {
                 Column {
                     ProfileOption(
-                        icon = Icons.Default.School,
+                        icon = Icons.Filled.School,
                         title = "University",
                         value = currentUser?.university?.ifEmpty { "Not set" } ?: "Not set"
                     )
                     Divider()
                     ProfileOption(
-                        icon = Icons.Default.Book,
+                        icon = Icons.Filled.Book,
                         title = "Course",
                         value = currentUser?.course?.ifEmpty { "Not set" } ?: "Not set"
                     )
                     Divider()
                     ProfileOption(
-                        icon = Icons.Default.Settings,
+                        icon = Icons.Filled.Settings,
                         title = "Settings",
                         value = ""
                     )
                     Divider()
                     ProfileOption(
-                        icon = Icons.Default.PrivacyTip,
+                        icon = Icons.Filled.Security,
                         title = "Privacy",
                         value = ""
                     )
@@ -134,7 +134,7 @@ fun ProfileScreen(
                     containerColor = MaterialTheme.colorScheme.error
                 )
             ) {
-                Icon(Icons.Default.Logout, "Sign Out")
+                Icon(Icons.Filled.ExitToApp, "Sign Out")
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Sign Out")
             }

@@ -34,7 +34,7 @@ fun AddExpenseScreen(
                 title = { Text("Add Expense") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                        Icon(Icons.Filled.ArrowBack, "Back")
                     }
                 }
             )

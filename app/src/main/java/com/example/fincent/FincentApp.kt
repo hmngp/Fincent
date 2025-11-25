@@ -5,16 +5,14 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
 import androidx.work.Configuration
-import androidx.work.WorkManager
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class FincentApp : Application() {
+class FincentApp : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
         createNotificationChannels()
-        initializeWorkManager()
     }
 
     private fun createNotificationChannels() {
@@ -51,17 +49,16 @@ class FincentApp : Application() {
             )
 
             val notificationManager = getSystemService(NotificationManager::class.java)
-            channels.forEach { notificationManager.createNotificationChannel(it) }
+            notificationManager?.let { manager ->
+                channels.forEach { manager.createNotificationChannel(it) }
+            }
         }
     }
 
-    private fun initializeWorkManager() {
-        WorkManager.initialize(
-            this,
-            Configuration.Builder()
-                .setMinimumLoggingLevel(android.util.Log.INFO)
-                .build()
-        )
+    override fun getWorkManagerConfiguration(): Configuration {
+        return Configuration.Builder()
+            .setMinimumLoggingLevel(android.util.Log.INFO)
+            .build()
     }
 
     companion object {

@@ -11,31 +11,31 @@ sealed class BottomNavItem(
 ) {
     object Dashboard : BottomNavItem(
         route = Screen.Dashboard.route,
-        icon = Icons.Default.Home,
+        icon = Icons.Filled.Home,
         label = "Dashboard"
     )
     
     object Expenses : BottomNavItem(
         route = Screen.Expenses.route,
-        icon = Icons.Default.AttachMoney,
+        icon = Icons.Filled.Payments,
         label = "Expenses"
     )
     
     object Budget : BottomNavItem(
         route = Screen.Budget.route,
-        icon = Icons.Default.AccountBalance,
+        icon = Icons.Filled.AccountBalance,
         label = "Budget"
     )
     
     object Goals : BottomNavItem(
         route = Screen.Goals.route,
-        icon = Icons.Default.Flag,
+        icon = Icons.Filled.Flag,
         label = "Goals"
     )
     
     object Profile : BottomNavItem(
         route = Screen.Profile.route,
-        icon = Icons.Default.Person,
+        icon = Icons.Filled.Person,
         label = "Profile"
     )
 }

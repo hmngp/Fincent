@@ -86,7 +86,8 @@ class AuthRepository @Inject constructor(
 
     suspend fun sendVerificationEmail(): Resource<Unit> {
         return try {
-            currentUser?.sendEmailVerification()?.await()
+            val user = currentUser ?: return Resource.Error("No user logged in")
+            user.sendEmailVerification().await()
             Resource.Success(Unit)
         } catch (e: Exception) {
             Resource.Error(e.message ?: "Failed to send verification email")
