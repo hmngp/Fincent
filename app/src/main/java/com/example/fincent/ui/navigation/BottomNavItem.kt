@@ -17,19 +17,19 @@ sealed class BottomNavItem(
     
     object Expenses : BottomNavItem(
         route = Screen.Expenses.route,
-        icon = Icons.Filled.AccountBalanceWallet,
+        icon = Icons.Filled.ShoppingCart,
         label = "Expenses"
     )
     
     object Budget : BottomNavItem(
         route = Screen.Budget.route,
-        icon = Icons.Filled.AccountBalance,
+        icon = Icons.Filled.Star,
         label = "Budget"
     )
     
     object Goals : BottomNavItem(
         route = Screen.Goals.route,
-        icon = Icons.Filled.Flag,
+        icon = Icons.Filled.Star,
         label = "Goals"
     )
     
