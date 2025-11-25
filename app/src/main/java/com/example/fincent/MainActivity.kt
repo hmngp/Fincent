@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,17 +49,6 @@ fun FincentApp(authViewModel: AuthViewModel = hiltViewModel()) {
     val currentUser by authViewModel.currentUser.collectAsState()
     val isCheckingAuth by authViewModel.isCheckingAuth.collectAsState()
 
-    // Show loading screen while checking authentication
-    if (isCheckingAuth) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
-        return
-    }
-
     // Navigate to main screen if user is already authenticated
     androidx.compose.runtime.LaunchedEffect(currentUser) {
         if (currentUser?.isEmailVerified == true) {
@@ -70,57 +58,70 @@ fun FincentApp(authViewModel: AuthViewModel = hiltViewModel()) {
         }
     }
 
-    NavHost(
-        navController = navController,
-        startDestination = Screen.Login.route
-    ) {
-        composable(Screen.Login.route) {
-            LoginScreen(
-                onNavigateToSignUp = {
-                    navController.navigate(Screen.SignUp.route)
-                },
-                onNavigateToDashboard = {
-                    navController.navigate("main") {
-                        popUpTo(Screen.Login.route) { inclusive = true }
+    Box(modifier = Modifier.fillMaxSize()) {
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Login.route,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            composable(Screen.Login.route) {
+                LoginScreen(
+                    onNavigateToSignUp = {
+                        navController.navigate(Screen.SignUp.route)
+                    },
+                    onNavigateToDashboard = {
+                        navController.navigate("main") {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    },
+                    onNavigateToEmailVerification = {
+                        // Placeholder for email verification flow
                     }
-                },
-                onNavigateToEmailVerification = {
-                    // Show a message that email needs to be verified
-                }
-            )
-        }
+                )
+            }
 
-        composable(Screen.SignUp.route) {
-            SignUpScreen(
-                onNavigateToLogin = {
-                    navController.popBackStack()
-                },
-                onNavigateToEmailVerification = {
-                    // Show email verification message
-                    navController.popBackStack()
-                }
-            )
-        }
-
-        composable("main") {
-            MainScreen(
-                onNavigateToLogin = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo("main") { inclusive = true }
+            composable(Screen.SignUp.route) {
+                SignUpScreen(
+                    onNavigateToLogin = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToEmailVerification = {
+                        // Placeholder for email verification flow
+                        navController.popBackStack()
                     }
-                },
-                onNavigateToAddExpense = {
-                    navController.navigate(Screen.AddExpense.route)
-                }
-            )
+                )
+            }
+
+            composable("main") {
+                MainScreen(
+                    onNavigateToLogin = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo("main") { inclusive = true }
+                        }
+                    },
+                    onNavigateToAddExpense = {
+                        navController.navigate(Screen.AddExpense.route)
+                    }
+                )
+            }
+
+            composable(Screen.AddExpense.route) {
+                AddExpenseScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
         }
 
-        composable(Screen.AddExpense.route) {
-            AddExpenseScreen(
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
-            )
+        if (isCheckingAuth) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
     }
 }
