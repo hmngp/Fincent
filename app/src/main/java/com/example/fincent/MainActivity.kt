@@ -3,12 +3,16 @@ package com.example.fincent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
@@ -46,18 +50,20 @@ fun FincentApp(authViewModel: AuthViewModel = hiltViewModel()) {
     val currentUser by authViewModel.currentUser.collectAsState()
     val isCheckingAuth by authViewModel.isCheckingAuth.collectAsState()
 
-    // Wait for auth check to complete before determining start destination
-    val startDestination = if (!isCheckingAuth && currentUser?.isEmailVerified == true) {
-        "main"
-    } else if (!isCheckingAuth) {
-        Screen.Login.route
-    } else {
-        Screen.Login.route // Show login while checking, will navigate if authenticated
+    // Show loading screen while checking authentication
+    if (isCheckingAuth) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+        return
     }
 
-    // Navigate to main screen if user becomes authenticated
-    androidx.compose.runtime.LaunchedEffect(currentUser, isCheckingAuth) {
-        if (!isCheckingAuth && currentUser?.isEmailVerified == true) {
+    // Navigate to main screen if user is already authenticated
+    androidx.compose.runtime.LaunchedEffect(currentUser) {
+        if (currentUser?.isEmailVerified == true) {
             navController.navigate("main") {
                 popUpTo(Screen.Login.route) { inclusive = true }
             }
@@ -66,7 +72,7 @@ fun FincentApp(authViewModel: AuthViewModel = hiltViewModel()) {
 
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = Screen.Login.route
     ) {
         composable(Screen.Login.route) {
             LoginScreen(
