@@ -5,9 +5,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.fincent.presentation.auth.AuthViewModel
+import com.example.fincent.presentation.budget.AddBudgetScreen
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -33,18 +39,39 @@ import com.example.fincent.ui.navigation.bottomNavItems
 fun MainScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToAddExpense: () -> Unit,
-    onNavigateToEditExpense: (String) -> Unit
+    onNavigateToEditExpense: (String) -> Unit,
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
+    val currentUser by authViewModel.currentUser.collectAsState()
+    val isCheckingAuth by authViewModel.isCheckingAuth.collectAsState()
+
+    // Determine start destination based on user state
+    val startDestination = remember(currentUser, isCheckingAuth) {
+        if (isCheckingAuth) {
+            Screen.Dashboard.route // Or a splash screen
+        } else if (currentUser == null) {
+            Screen.SetupProfile.route
+        } else if (!currentUser!!.isEmailVerified) {
+            Screen.EmailVerification.route
+        } else {
+            Screen.Dashboard.route
+        }
+    }
 
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(navController)
+            // Only show bottom bar if we are in main app flow
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentRoute = navBackStackEntry?.destination?.route
+            if (currentRoute != Screen.SetupProfile.route && currentRoute != Screen.EmailVerification.route) {
+                BottomNavigationBar(navController)
+            }
         }
     ) { padding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Dashboard.route,
+            startDestination = startDestination,
             modifier = Modifier.padding(padding)
         ) {
             composable(Screen.Dashboard.route) {
@@ -52,6 +79,26 @@ fun MainScreen(
                     onNavigateToAddExpense = onNavigateToAddExpense,
                     onNavigateToBills = {
                         navController.navigate(Screen.BillList.route)
+                    }
+                )
+            }
+            
+            composable(Screen.SetupProfile.route) {
+                com.example.fincent.presentation.profile.SetupProfileScreen(
+                    onNavigateToVerification = {
+                        navController.navigate(Screen.EmailVerification.route) {
+                            popUpTo(Screen.SetupProfile.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            
+            composable(Screen.EmailVerification.route) {
+                com.example.fincent.presentation.profile.EmailVerificationScreen(
+                    onNavigateToDashboard = {
+                        navController.navigate(Screen.Dashboard.route) {
+                            popUpTo(Screen.EmailVerification.route) { inclusive = true }
+                        }
                     }
                 )
             }
