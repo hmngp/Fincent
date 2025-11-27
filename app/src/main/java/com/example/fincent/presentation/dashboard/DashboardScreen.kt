@@ -46,8 +46,11 @@ fun DashboardScreen(
             TopAppBar(
                 title = { 
                     Text(
-                        "Fincent Dashboard",
-                        fontWeight = FontWeight.Bold
+                        "Fincent",
+                        fontWeight = FontWeight.ExtraBold,
+                        fontSize = 28.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                        letterSpacing = 1.sp
                     )
                 }
             )

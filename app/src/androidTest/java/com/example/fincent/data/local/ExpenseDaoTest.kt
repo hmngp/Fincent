@@ -54,7 +54,7 @@ class ExpenseDaoTest {
             tags = emptyList()
         )
         expenseDao.insertExpense(expense)
-        val allExpenses = expenseDao.getExpenses("user1").first()
+        val allExpenses = expenseDao.getAllExpenses("user1").first()
         assertEquals(allExpenses[0].description, "Pizza")
     }
 }

@@ -5,6 +5,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +24,7 @@ import java.util.*
 @Composable
 fun ExpenseListScreen(
     onNavigateToAddExpense: () -> Unit,
+    onNavigateToEditExpense: (String) -> Unit,
     authViewModel: AuthViewModel = hiltViewModel(),
     expenseViewModel: ExpenseViewModel = hiltViewModel()
 ) {
@@ -100,6 +104,8 @@ fun ExpenseListScreen(
                 }
 
                 items(expenses) { expense ->
+                    var expanded by remember { mutableStateOf(false) }
+
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         elevation = CardDefaults.cardElevation(2.dp)
@@ -138,12 +144,40 @@ fun ExpenseListScreen(
                                     )
                                 }
                             }
-                            Text(
-                                "-$${"%.2f".format(expense.amount)}",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.error
-                            )
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    "-$${"%.2f".format(expense.amount)}",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                                Box {
+                                    IconButton(onClick = { expanded = true }) {
+                                        Icon(Icons.Filled.MoreVert, contentDescription = "More options")
+                                    }
+                                    DropdownMenu(
+                                        expanded = expanded,
+                                        onDismissRequest = { expanded = false }
+                                    ) {
+                                        DropdownMenuItem(
+                                            text = { Text("Edit") },
+                                            onClick = {
+                                                expanded = false
+                                                onNavigateToEditExpense(expense.id)
+                                            },
+                                            leadingIcon = { Icon(Icons.Filled.Edit, contentDescription = null) }
+                                        )
+                                        DropdownMenuItem(
+                                            text = { Text("Delete") },
+                                            onClick = {
+                                                expanded = false
+                                                expenseViewModel.deleteExpense(expense)
+                                            },
+                                            leadingIcon = { Icon(Icons.Filled.Delete, contentDescription = null) }
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }

@@ -32,7 +32,8 @@ import com.example.fincent.ui.navigation.bottomNavItems
 @Composable
 fun MainScreen(
     onNavigateToLogin: () -> Unit,
-    onNavigateToAddExpense: () -> Unit
+    onNavigateToAddExpense: () -> Unit,
+    onNavigateToEditExpense: (String) -> Unit
 ) {
     val navController = rememberNavController()
 
@@ -51,7 +52,10 @@ fun MainScreen(
             }
 
             composable(Screen.Expenses.route) {
-                ExpenseListScreen(onNavigateToAddExpense = onNavigateToAddExpense)
+                ExpenseListScreen(
+                    onNavigateToAddExpense = onNavigateToAddExpense,
+                    onNavigateToEditExpense = onNavigateToEditExpense
+                )
             }
 
             composable(Screen.Budget.route) {
@@ -90,7 +94,9 @@ fun BottomNavigationBar(navController: NavHostController) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    NavigationBar {
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.surface
+    ) {
         bottomNavItems.forEach { item ->
             NavigationBarItem(
                 icon = { Icon(item.icon, contentDescription = item.label) },

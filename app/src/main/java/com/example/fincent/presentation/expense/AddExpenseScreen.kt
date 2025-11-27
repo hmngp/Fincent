@@ -21,6 +21,7 @@ import com.example.fincent.presentation.auth.AuthViewModel
 @Composable
 fun AddExpenseScreen(
     onNavigateBack: () -> Unit,
+    expenseId: String? = null,
     authViewModel: AuthViewModel = hiltViewModel(),
     expenseViewModel: ExpenseViewModel = hiltViewModel(),
     budgetViewModel: com.example.fincent.presentation.budget.BudgetViewModel = hiltViewModel()
@@ -56,10 +57,22 @@ fun AddExpenseScreen(
     val currentUser by authViewModel.currentUser.collectAsState()
     val activeBudgets by budgetViewModel.activeBudgets.collectAsState()
 
-    LaunchedEffect(currentUser) {
+    LaunchedEffect(currentUser, expenseId) {
         val userId = currentUser?.uid ?: "demo-user"
         budgetViewModel.loadBudgets(userId)
         budgetViewModel.loadActiveBudgets(userId)
+        
+        if (expenseId != null) {
+            val expense = expenseViewModel.getExpenseById(expenseId)
+            expense?.let {
+                amount = it.amount.toString()
+                description = it.description
+                selectedCategory = it.category
+                selectedDate = it.date
+                // Disable deduct from budget when editing to avoid double deduction logic complexity for now
+                isDeductFromBudget = false 
+            }
+        }
     }
 
     if (showSplitDialog) {
@@ -115,7 +128,7 @@ fun AddExpenseScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Add Expense") },
+                title = { Text(if (expenseId != null) "Edit Expense" else "Add Expense") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Filled.ArrowBack, "Back")
@@ -199,7 +212,7 @@ fun AddExpenseScreen(
                 )
             }
 
-            if (activeBudgets.isNotEmpty()) {
+            if (activeBudgets.isNotEmpty() && expenseId == null) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth()
@@ -221,16 +234,21 @@ fun AddExpenseScreen(
                     if (expenseAmount > 0) {
                         val userId = currentUser?.uid ?: "demo-user"
                         val expense = Expense(
+                            id = expenseId ?: "",
                             userId = userId,
                             amount = expenseAmount,
                             description = description.ifBlank { "Expense" },
                             category = selectedCategory,
                             date = selectedDate
                         )
-                        expenseViewModel.addExpense(expense)
                         
-                        if (isDeductFromBudget && activeBudgets.isNotEmpty()) {
-                            budgetViewModel.deductExpenseFromBudget(selectedCategory, expenseAmount)
+                        if (expenseId != null) {
+                            expenseViewModel.updateExpense(expense)
+                        } else {
+                            expenseViewModel.addExpense(expense)
+                            if (isDeductFromBudget && activeBudgets.isNotEmpty()) {
+                                budgetViewModel.deductExpenseFromBudget(selectedCategory, expenseAmount)
+                            }
                         }
                         
                         onNavigateBack()
@@ -240,7 +258,7 @@ fun AddExpenseScreen(
                     .fillMaxWidth()
                     .height(50.dp)
             ) {
-                Text("Add Expense", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Text(if (expenseId != null) "Update Expense" else "Add Expense", fontSize = 16.sp, fontWeight = FontWeight.Medium)
             }
 
             OutlinedButton(

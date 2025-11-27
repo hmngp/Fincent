@@ -81,5 +81,9 @@ class ExpenseViewModel @Inject constructor(
 
         return expenseRepository.getTotalExpenseInRange(userId, startOfMonth, endOfMonth)
     }
+
+    suspend fun getExpenseById(id: String): Expense? {
+        return expenseRepository.getExpenseById(id)
+    }
 }
 

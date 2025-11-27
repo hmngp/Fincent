@@ -47,16 +47,30 @@ fun FincentAppContent() {
             MainScreen(
                 onNavigateToLogin = { /* no-op: auth temporarily disabled */ },
                 onNavigateToAddExpense = {
-                    navController.navigate(Screen.AddExpense.route)
+                    navController.navigate(Screen.AddExpense.createRoute(null))
+                },
+                onNavigateToEditExpense = { expenseId ->
+                    navController.navigate(Screen.AddExpense.createRoute(expenseId))
                 }
             )
         }
 
-        composable(Screen.AddExpense.route) {
+        composable(
+            route = Screen.AddExpense.route,
+            arguments = listOf(
+                androidx.navigation.navArgument("expenseId") {
+                    nullable = true
+                    defaultValue = null
+                    type = androidx.navigation.NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val expenseId = backStackEntry.arguments?.getString("expenseId")
             AddExpenseScreen(
                 onNavigateBack = {
                     navController.popBackStack()
-                }
+                },
+                expenseId = expenseId
             )
         }
     }
