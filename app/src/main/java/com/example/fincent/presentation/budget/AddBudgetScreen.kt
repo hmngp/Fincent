@@ -136,6 +136,7 @@ fun AddBudgetScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
+            val context = androidx.compose.ui.platform.LocalContext.current
             Button(
                 onClick = {
                     val budgetAmount = amount.toDoubleOrNull() ?: 0.0
@@ -167,6 +168,13 @@ fun AddBudgetScreen(
                         )
                         budgetViewModel.addBudget(budget)
                         onNavigateBack()
+                    } else {
+                        // Show error if validation fails
+                        android.widget.Toast.makeText(
+                            context, 
+                            "Please enter a valid name and amount", 
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
                     }
                 },
                 modifier = Modifier

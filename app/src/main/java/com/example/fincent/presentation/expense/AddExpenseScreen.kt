@@ -125,6 +125,15 @@ fun AddExpenseScreen(
         )
     }
 
+    var selectedBudget by remember { mutableStateOf<com.example.fincent.domain.model.Budget?>(null) }
+    
+    // Update selected budget if activeBudgets changes or initial selection
+    LaunchedEffect(activeBudgets) {
+        if (selectedBudget == null && activeBudgets.isNotEmpty()) {
+            selectedBudget = activeBudgets.first()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -212,17 +221,72 @@ fun AddExpenseScreen(
                 )
             }
 
-            if (activeBudgets.isNotEmpty() && expenseId == null) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Checkbox(
-                        checked = isDeductFromBudget,
-                        onCheckedChange = { isDeductFromBudget = it }
+            // Budget Selection Logic
+            if (expenseId == null) { // Only show for new expenses
+                if (activeBudgets.isEmpty()) {
+                    Text(
+                        "You have not made any budget yet",
+                        color = MaterialTheme.colorScheme.error,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(vertical = 8.dp)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Spend from Budget")
+                } else {
+                    Column {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Checkbox(
+                                checked = isDeductFromBudget,
+                                onCheckedChange = { isDeductFromBudget = it }
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Spend from Budget")
+                        }
+
+                        if (isDeductFromBudget) {
+                            var budgetExpanded by remember { mutableStateOf(false) }
+
+                            ExposedDropdownMenuBox(
+                                expanded = budgetExpanded,
+                                onExpandedChange = { budgetExpanded = it },
+                                modifier = Modifier.padding(start = 12.dp) // Indent to show hierarchy
+                            ) {
+                                OutlinedTextField(
+                                    value = selectedBudget?.name ?: "Select Budget",
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    label = { Text("Select Budget to Deduct From") },
+                                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(budgetExpanded) },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .menuAnchor()
+                                )
+                                ExposedDropdownMenu(
+                                    expanded = budgetExpanded,
+                                    onDismissRequest = { budgetExpanded = false }
+                                ) {
+                                    activeBudgets.forEach { budget ->
+                                        DropdownMenuItem(
+                                            text = { 
+                                                Column {
+                                                    Text(budget.name, fontWeight = FontWeight.Bold)
+                                                    Text(
+                                                        "Remaining: $${"%.2f".format(budget.totalAmount - budget.spentAmount)}",
+                                                        fontSize = 12.sp
+                                                    )
+                                                }
+                                            },
+                                            onClick = {
+                                                selectedBudget = budget
+                                                budgetExpanded = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -247,7 +311,11 @@ fun AddExpenseScreen(
                         } else {
                             expenseViewModel.addExpense(expense)
                             if (isDeductFromBudget && activeBudgets.isNotEmpty()) {
-                                budgetViewModel.deductExpenseFromBudget(selectedCategory, expenseAmount)
+                                budgetViewModel.deductExpenseFromBudget(
+                                    category = selectedCategory, 
+                                    amount = expenseAmount,
+                                    budgetId = selectedBudget?.id
+                                )
                             }
                         }
                         

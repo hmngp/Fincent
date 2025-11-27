@@ -56,14 +56,18 @@ class BudgetViewModel @Inject constructor(
         }
     }
 
-    fun deductExpenseFromBudget(category: com.example.fincent.domain.model.ExpenseCategory, amount: Double) {
+    fun deductExpenseFromBudget(category: com.example.fincent.domain.model.ExpenseCategory, amount: Double, budgetId: String? = null) {
         viewModelScope.launch {
             val currentBudgets = if (_activeBudgets.value.isNotEmpty()) _activeBudgets.value else _budgets.value.filter { it.isActive }
             
-            val budgetToUpdate = currentBudgets.find { 
-                it.category.name == category.name 
-            } ?: currentBudgets.find { it.category == com.example.fincent.domain.model.BudgetCategory.GENERAL }
-            ?: currentBudgets.firstOrNull()
+            val budgetToUpdate = if (budgetId != null) {
+                currentBudgets.find { it.id == budgetId }
+            } else {
+                currentBudgets.find { 
+                    it.category.name == category.name 
+                } ?: currentBudgets.find { it.category == com.example.fincent.domain.model.BudgetCategory.GENERAL }
+                ?: currentBudgets.firstOrNull()
+            }
 
             budgetToUpdate?.let { budget ->
                 val updatedBudget = budget.copy(spentAmount = budget.spentAmount + amount)
