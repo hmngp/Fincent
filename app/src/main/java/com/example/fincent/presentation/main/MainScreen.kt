@@ -48,7 +48,12 @@ fun MainScreen(
             modifier = Modifier.padding(padding)
         ) {
             composable(Screen.Dashboard.route) {
-                DashboardScreen(onNavigateToAddExpense = onNavigateToAddExpense)
+                DashboardScreen(
+                    onNavigateToAddExpense = onNavigateToAddExpense,
+                    onNavigateToBills = {
+                        navController.navigate(Screen.BillList.route)
+                    }
+                )
             }
 
             composable(Screen.Expenses.route) {
@@ -84,6 +89,20 @@ fun MainScreen(
 
             composable(Screen.AddGoal.route) {
                 AddGoalScreen(onNavigateBack = { navController.popBackStack() })
+            }
+            
+            composable(Screen.BillList.route) {
+                com.example.fincent.presentation.bill.BillListScreen(
+                    onNavigateToAddBill = {
+                        navController.navigate(Screen.AddBill.route)
+                    }
+                )
+            }
+            
+            composable(Screen.AddBill.route) {
+                com.example.fincent.presentation.bill.AddBillScreen(
+                    onNavigateBack = { navController.popBackStack() }
+                )
             }
         }
     }

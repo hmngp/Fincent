@@ -24,6 +24,7 @@ import java.util.Locale
 @Composable
 fun DashboardScreen(
     onNavigateToAddExpense: () -> Unit,
+    onNavigateToBills: () -> Unit,
     authViewModel: AuthViewModel = hiltViewModel(),
     expenseViewModel: ExpenseViewModel = hiltViewModel(),
     budgetViewModel: BudgetViewModel = hiltViewModel(),
@@ -130,11 +131,20 @@ fun DashboardScreen(
                     )
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            "Upcoming Bills",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                "Upcoming Bills",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            TextButton(onClick = onNavigateToBills) {
+                                Text("See All")
+                            }
+                        }
                         Spacer(modifier = Modifier.height(8.dp))
                         
                         if (bills.isEmpty()) {
