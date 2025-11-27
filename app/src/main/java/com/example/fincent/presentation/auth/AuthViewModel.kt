@@ -89,15 +89,31 @@ class AuthViewModel @Inject constructor(
 
     fun saveLocalProfile(name: String, university: String, email: String) {
         viewModelScope.launch {
+            // Check if email is changing to decide on verification reset
+            val currentEmail = _currentUser.value?.email
+            val isEmailChanged = currentEmail != null && currentEmail != email
+            
+            // If it's a new profile setup (currentEmail is null or empty), we reset verification.
+            // If updating existing profile, we keep verification unless email changes.
+            val shouldResetVerification = isEmailChanged || currentEmail.isNullOrBlank()
+
             dataStore.edit { preferences ->
                 preferences[KEY_NAME] = name
                 preferences[KEY_UNIVERSITY] = university
                 preferences[KEY_EMAIL] = email
                 preferences[KEY_IS_PROFILE_SETUP] = true
-                preferences[KEY_IS_VERIFIED] = false // Reset verification on new profile
+                if (shouldResetVerification) {
+                    preferences[KEY_IS_VERIFIED] = false
+                }
             }
+            
             // Update current user state immediately
-            _currentUser.value = User(
+            _currentUser.value = _currentUser.value?.copy(
+                displayName = name,
+                email = email,
+                university = university,
+                isEmailVerified = if (shouldResetVerification) false else (_currentUser.value?.isEmailVerified ?: false)
+            ) ?: User(
                 uid = "demo-user",
                 displayName = name,
                 email = email,

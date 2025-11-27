@@ -1,6 +1,8 @@
 package com.example.fincent.presentation.profile
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -21,16 +23,85 @@ fun ProfileScreen(
 ) {
     val currentUser by authViewModel.currentUser.collectAsState()
 
+    var showEditDialog by remember { mutableStateOf(false) }
+    var editName by remember { mutableStateOf("") }
+    var editUniversity by remember { mutableStateOf("") }
+    var editCourse by remember { mutableStateOf("") }
+
+    if (showEditDialog) {
+        AlertDialog(
+            onDismissRequest = { showEditDialog = false },
+            title = { Text("Edit Profile") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    OutlinedTextField(
+                        value = editName,
+                        onValueChange = { editName = it },
+                        label = { Text("Full Name") },
+                        singleLine = true
+                    )
+                    OutlinedTextField(
+                        value = editUniversity,
+                        onValueChange = { editUniversity = it },
+                        label = { Text("University") },
+                        singleLine = true
+                    )
+                    OutlinedTextField(
+                        value = editCourse,
+                        onValueChange = { editCourse = it },
+                        label = { Text("Course") },
+                        singleLine = true
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (editName.isNotBlank()) {
+                            val updatedUser = currentUser?.copy(
+                                displayName = editName,
+                                university = editUniversity,
+                                course = editCourse
+                            )
+                            updatedUser?.let { authViewModel.updateProfile(it) }
+                            showEditDialog = false
+                        }
+                    }
+                ) {
+                    Text("Save")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showEditDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Profile") })
+            TopAppBar(
+                title = { Text("Profile") },
+                actions = {
+                    IconButton(onClick = {
+                        editName = currentUser?.displayName ?: ""
+                        editUniversity = currentUser?.university ?: ""
+                        editCourse = currentUser?.course ?: ""
+                        showEditDialog = true
+                    }) {
+                        Icon(Icons.Filled.Edit, "Edit Profile")
+                    }
+                }
+            )
         }
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Profile Header
@@ -122,7 +193,7 @@ fun ProfileScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
